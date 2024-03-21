@@ -42,9 +42,8 @@ const myWorker = new Worker(
     },
   }
 );
-
-const credeli = async ({ order }) => {
-  // const order = await Order.findOne({ orderId: order });
+const credeli = async () => {
+  const order = await Order.findOne({ orderId: "2013132" });
   try {
     const customer = await User.findById(order?.buyerId);
 
@@ -60,44 +59,45 @@ const credeli = async ({ order }) => {
     for (let i = 0; i < data.length; i++) {
       const store = await User.findById(data[i]?.seller);
 
-      const check = geolib.isPointWithinRadius(
-        {
-          latitude: customer?.address?.coordinates?.latitude,
-          longitude: customer?.address?.coordinates?.longitude,
-        },
-        {
-          latitude: store?.address?.coordinates?.latitude,
-          longitude: store?.address?.coordinates?.longitude,
-        },
-        20000
-      );
+      //   const check = geolib.isPointWithinRadius(
+      //     {
+      //       latitude: customer?.address?.coordinates?.latitude,
+      //       longitude: customer?.address?.coordinates?.longitude,
+      //     },
+      //     {
+      //       latitude: store?.address?.coordinates?.latitude,
+      //       longitude: store?.address?.coordinates?.longitude,
+      //     },
+      //     20000
+      //   );
 
       //assign the delivery to the partner
       let eligibledriver = [];
-      const deliverypartner = await Deluser.findOne({
+      const deliverypartner = await Deluser.find({
         accounttype: "partner",
       });
 
-      if (
-        deliverypartner &&
-        deliverypartner.accstatus !== "banned" &&
-        deliverypartner.accstatus !== "review" &&
-        deliverypartner.deliveries?.length < 21 &&
-        deliverypartner.totalbalance < 3000
-      ) {
-        let driverloc = {
-          latitude: deliverypartner.currentlocation?.latitude,
-          longitude: deliverypartner.currentlocation?.longitude,
-          id: deliverypartner?._id,
-        };
-        eligibledriver.push(driverloc);
+      for (let i = 0; i < deliverypartner.length; i++) {
+        if (
+          deliverypartner[i].accstatus !== "banned" &&
+          deliverypartner[i].accstatus !== "review" &&
+          deliverypartner[i].deliveries?.length < 21 &&
+          deliverypartner[i].totalbalance < 3000
+        ) {
+          let driverloc = {
+            latitude: deliverypartner[i].currentlocation?.latitude,
+            longitude: deliverypartner[i].currentlocation?.longitude,
+            id: deliverypartner[i]?._id,
+          };
+          eligibledriver.push(driverloc);
+        }
       }
 
       if (eligibledriver?.length > 0) {
         const nearestpartner = geolib.findNearest(
           {
-            latitude: deliverypartner.currentlocation?.latitude,
-            longitude: deliverypartner.currentlocation?.longitude,
+            latitude: eligibledriver[i].currentlocation?.latitude,
+            longitude: eligibledriver[i].currentlocation?.longitude,
           },
           eligibledriver
         );
@@ -160,3 +160,5 @@ const credeli = async ({ order }) => {
     console.log(e, "Error in Worker");
   }
 };
+
+credeli();

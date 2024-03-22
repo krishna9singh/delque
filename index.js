@@ -42,8 +42,8 @@ const myWorker = new Worker(
     },
   }
 );
-const credeli = async () => {
-  const order = await Order.findOne({ orderId: "2013132" });
+const credeli = async ({ order }) => {
+  // const order = await Order.findOne({ orderId: "2013132" });
   try {
     const customer = await User.findById(order?.buyerId);
 
@@ -94,10 +94,11 @@ const credeli = async () => {
       }
 
       if (eligibledriver?.length > 0) {
+        // console.log(eligibledriver[0].currentlocation?.latitude);
         const nearestpartner = geolib.findNearest(
           {
-            latitude: eligibledriver[i].currentlocation?.latitude,
-            longitude: eligibledriver[i].currentlocation?.longitude,
+            latitude: eligibledriver[0]?.latitude,
+            longitude: eligibledriver[0]?.longitude,
           },
           eligibledriver
         );
@@ -160,5 +161,3 @@ const credeli = async () => {
     console.log(e, "Error in Worker");
   }
 };
-
-credeli();

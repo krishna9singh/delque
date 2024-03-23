@@ -11,13 +11,15 @@ const Deliveries = new mongoose.Schema({
   type: { type: String },
   mode: { type: String },
   reason: { type: String },
+
   pickupaddress: {
+    buildingno: { type: String },
+    city: { type: String },
     streetaddress: { type: String },
     state: { type: String },
-    city: { type: String },
+    postal: { type: Number },
     landmark: { type: String },
     pincode: { type: String },
-    country: { type: String },
     coordinates: {
       latitude: { type: Number },
       longitude: { type: Number },
@@ -27,7 +29,9 @@ const Deliveries = new mongoose.Schema({
       bearing: { type: Number },
     },
   },
+
   droppingaddress: {
+    buildingno: { type: String },
     streetaddress: { type: String },
     state: { type: String },
     city: { type: String },
@@ -41,6 +45,7 @@ const Deliveries = new mongoose.Schema({
       provider: { type: String },
       accuracy: { type: Number },
       bearing: { type: Number },
+      postal: { type: Number },
     },
   },
 

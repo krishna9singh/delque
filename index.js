@@ -105,7 +105,7 @@ const credeli = async ({ order }) => {
 
         if (nearestpartner) {
           const driver = await Deluser?.findById(nearestpartner?.id);
-
+          console.log(store.storeAddress);
           const newDeliveries = new Delivery({
             title: customer?.fullname,
             amount: order?.total,
